@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -123,12 +125,12 @@ class _DashboardState extends State<Dashboard> {
                            setState(() {
                              isOpen = false;
 
-                             if(dropDownValue=="Income"){
-                               totalIncome = totalIncome + int.parse(amountController.text.toString());
-                             }else{
-                               totalExpense = totalExpense + int.parse(amountController.text.toString());
-                             }
-                             saving = totalIncome - totalExpense;
+                             // if(dropDownValue=="Income"){
+                             //   totalIncome = totalIncome + int.parse(amountController.text.toString());
+                             // }else{
+                             //   totalExpense = totalExpense + int.parse(amountController.text.toString());
+                             // }
+                             // saving = totalIncome - totalExpense;
 
                            });
                            final providers = Provider.of<FinanceProvider>(context,listen:false);
@@ -136,6 +138,9 @@ class _DashboardState extends State<Dashboard> {
                                type: dropDownValue,
                                amount: int.parse(amountController.text.toString())
                            ));
+                           totalIncome = providers.totalIncome;
+                           totalExpense = providers.totalExpense;
+                           saving = providers.savings;
                            amountController.text="";
                            //providers.setFinancialRecords(financialRecords)
                          }
@@ -193,71 +198,75 @@ class _DashboardState extends State<Dashboard> {
           height: size.height,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Card(
-                    color: Colors.green,
-                    child: Padding(
-                      padding: const EdgeInsets.all(defaultPadding/2),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Total Income:",
-                            style: Theme.of(context).textTheme.labelLarge,
+              Consumer<FinanceProvider>(
+                builder: (context,data,_){
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Card(
+                        color: Colors.green,
+                        child: Padding(
+                          padding: const EdgeInsets.all(defaultPadding/2),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Total Income:",
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              Text(
+                                "Rs ${data.totalIncome}",
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ],
                           ),
-                          Text(
-                              "Rs $totalIncome",
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Card(
-                    color: Colors.red,
-                    child: Padding(
-                      padding: const EdgeInsets.all(defaultPadding/2),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Total Expenses:",
-                            style: Theme.of(context).textTheme.labelLarge,
+                      Card(
+                        color: Colors.red,
+                        child: Padding(
+                          padding: const EdgeInsets.all(defaultPadding/2),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Total Expenses:",
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              Text(
+                                "Rs ${data.totalExpense}",
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ],
                           ),
-                          Text(
-                              "Rs $totalExpense",
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Card(
-                    color: Colors.blue,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: defaultPadding/2, horizontal: defaultPadding),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Savings:",
-                            style: Theme.of(context).textTheme.labelLarge,
+                      Card(
+                        color: Colors.blue,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: defaultPadding/2, horizontal: defaultPadding),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Savings:",
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              Text(
+                                "Rs ${data.savings}",
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ],
                           ),
-                          Text(
-                              "Rs $saving",
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+                        ),
+                      )
+                    ],
+                  );
+                },
               ),
               Expanded(
                 child: ListView.builder(
                   shrinkWrap: false,
                   itemCount: provider.allFinancialRecords.length,
                   itemBuilder: (BuildContext context,int index) {
-                    print("provider.allFinancialRecords= "+provider.allFinancialRecords.length.toString());
+                    log("provider.allFinancialRecords= "+provider.allFinancialRecords.length.toString());
 
                     return ListTile(
                       style: Theme.of(context).listTileTheme.style,
