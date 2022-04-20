@@ -124,14 +124,6 @@ class _DashboardState extends State<Dashboard> {
                          if(formKey.currentState!.validate()){
                            setState(() {
                              isOpen = false;
-
-                             // if(dropDownValue=="Income"){
-                             //   totalIncome = totalIncome + int.parse(amountController.text.toString());
-                             // }else{
-                             //   totalExpense = totalExpense + int.parse(amountController.text.toString());
-                             // }
-                             // saving = totalIncome - totalExpense;
-
                            });
                            final providers = Provider.of<FinanceProvider>(context,listen:false);
                            providers.updateFinancialRecords(Finance(
@@ -142,7 +134,6 @@ class _DashboardState extends State<Dashboard> {
                            totalExpense = providers.totalExpense;
                            saving = providers.savings;
                            amountController.text="";
-                           //providers.setFinancialRecords(financialRecords)
                          }
                        },
                        style: ElevatedButton.styleFrom(
